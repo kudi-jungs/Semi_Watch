@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import review.domain.ReviewVO;
 import shop.domain.ImageVO;
 import shop.domain.ProductVO;
 import shop.domain.Product_DetailVO;
@@ -30,9 +31,19 @@ public interface ss_2_ProductDAO {
 	
 	//상품상세 -> 장바구니 insert 메소드
 	int DetailProductInsert(String pdDetailNo, String userid, String quantity) throws SQLException;
-
-	List<ProductVO> wishAdd(Map<String, Object> paraMap)  throws SQLException;
 	
+	//선택한 물품 위시리스트에 넣는 메소드
+	List<ProductVO> wishAdd(Map<String, Object> paraMap)  throws SQLException;
+
+	// 제품번호로 리뷰를 가져오는 메소드
+	public List<Map<String, String>> getReviewsBypnum(Map<String, String> paraMap) throws SQLException;
+
+	// 페이지 바 만들기 - 페이징 처리를 위한 리뷰에 대한 총페이지 수를 알아와야 한다.
+	int getTotalPage(Map<String, String> paraMap) throws SQLException;
+
+	// 사용자가 구매하는 상품(컬러) 재고가 남아있는지 확인하는 메소드
+	boolean itemDetailCheckPdQty(String str_pdno, String selectedColor, String str_cart_qty) throws SQLException;
+
 	
 	
 	

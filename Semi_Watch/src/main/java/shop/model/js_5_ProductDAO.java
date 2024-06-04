@@ -81,8 +81,24 @@ public interface js_5_ProductDAO {
 	// 로그인한 유저의 장바구니 테이블 불러오기
 	List<CartVO> selectProductCart(String userid) throws SQLException;
 
-	
-	List<ProductVO> selectCartSumPricePoint(String userid) throws SQLException;
+	// 장바구니 테이블에서 특정 상품을 장바구니에서 비우기
+	int delCart(String cartno) throws SQLException;
+
+	// 장바구니 테이블에서 특정 상품 장바구니수량 변경하기
+	int updateCart(Map<String, String> paraMap) throws SQLException;
+
+	// 관리자가 보는 브랜드별 주문총액 통계
+	List<Map<String, String>> Purchase_byBrand(String userid) throws SQLException;
+
+	// 관리자가 보는 브랜드별 주문건수 통계
+	List<Map<String, String>> Purchase_byBrandCnt(String userid) throws SQLException ;
+
+	// 관리자가 보는 브랜드 월별 주문총액 통계
+	List<Map<String, String>> Purchase_byMonth(String userid) throws SQLException;
+
+	// 관리자가 보는 월별 주문건수 통계
+	List<Map<String, String>> Purchase_byMonthCnt(String userid) throws SQLException;
+
 
 	
 

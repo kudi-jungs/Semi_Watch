@@ -9,105 +9,52 @@
 
 <jsp:include page="../header1.jsp"></jsp:include>
 
-<%-- 회원정보수정 관련 js --%>
-<script type="text/javascript" src="<%= ctxPath%>/js/member/memberInfoChange.js"></script>
-<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<jsp:include page="../header2_user.jsp"></jsp:include>
 
-<%-- 회원정보수정 관련 css --%>
-<link rel="stylesheet" type="text/css" href="<%= ctxPath%>/css/member/memberInfoChange.css" />
+<style type="text/css">
+
+img.userimg_size{
+	width: 50px;
+	height: 50px;
+	object-fit: cover;
+	border-radius: 50%;
+}
+
+
+
+
+</style>
+
+<script type="text/javascript" src="<%= ctxPath%>/js/member/memberInfoChange.js"></script>
 
 <script type="text/javascript">
-$(document).ready(function() {
+
+$(document).ready(function(){
+	//사진 변경 버튼 누르면
+	$("button#change_img").click(function(){
+	    
+	    $("tr#profile_image_area").hide();
+	    $("tr#change_profile_image_area").show();
+
+	    document.getElementById("previewImg").src = "<%= ctxPath%>/images/member/${sessionScope.loginuser.userimg}";
+
+	}); // end of $("button#change_img").click(function() -------
+
+
+	// 사진 변경 취소 버튼 누르면
+	$("button:reset[id='imgcancle']").click(function(){
+
+	    $("tr#change_profile_image_area").hide();
+	    $("tr#profile_image_area").show();
+
+	});
 	
 	
-    
-});// end of $(document).ready(function() ----------
-	
+});// end of $(document).ready(function()--------------
+
+
 </script>
 
-<%-- 회원정보 내용 시작 --%>
-<body>
-	<%-- 상단 바 시작 --%>
-	<div class="pt-3" id="topBar">
-		<div >
-			<h2 id="myPage">My Page</h2> 
-		</div>
-		<div class="row text-center" style="padding: 10px 0 20px 0;">
-			<div class="col-xl-5" style="border: solid 1px blue; padding: 20px 0;">
-				회원아이디
-			</div>
-			<div class="col" style="border: solid 1px blue;">
-				<a class="nav-link" href="#" style="color: white;">
-					장바구니
-					<div>5 건</div>
-				</a> 
-			</div>
-			<div class="col" style="border: solid 1px blue;">
-				<a class="nav-link" href="#" style="color: white;">
-					포인트
-					<div>3000</div>
-				</a>
-			</div>
-			<div class="col" style="border: solid 1px blue; ">
-				<a class="nav-link" href="#" style="color: white;">
-					쿠폰
-					<div>5 개</div>
-				</a>
-			</div>
-			<div class="col" style="border: solid 1px blue;">
-				<a class="nav-link" href="#" style="color: white;">
-					후기
-					<div>5 개</div>
-				</a>
-			</div>
-			
-		</div>
-	</div>
-	<%-- 상단 바 끝 --%>
-
-	
-	<div class="container-fluid">
-		<div class="row">
-			<%-- 왼쪽 사이드 메뉴 시작--%>
-	        <div class="col-xl-2" id="subject" >
-	            <nav class="navbar sticky-top">
-	            	<div>
-				    	<ul class="navbar-nav mt-3" id="menu">
-				    		<li class="mb-1">
-				      			<span class="h5" id="menu_first" href="<%=ctxPath%>/order/orderList.flex">나의 쇼핑정보</span>
-				      		</li>
-				      		<li>
-				        		<a class="nav-link" href="#">주문배송조회</a>
-				      		</li>
-				      		<li>
-				        		<a class="nav-link" href="#">취소/교환/반품 내역</a>
-				      		</li>
-				      		<li class="mb-4">
-				        		<a class="nav-link" href="#">상품 리뷰</a>
-				      		</li>
-
-				      		<li>
-				      			<span class="h5" id="menu_first">나의 계정설정</span>
-				      		</li>
-				      		<li>
-				        		<a class="nav-link" href="#">회원정보수정</a>
-				      		</li>
-				      		<li>
-				        		<a class="nav-link" href="#">쿠폰</a>
-				      		</li>
-				      		<li>
-				        		<a class="nav-link" href="#">마일리지</a>
-				      		</li>
-				      		<li>
-				        		<a class="nav-link" href="<%=ctxPath%>/login/logout.flex">로그아웃</a>
-				      		</li>
-				    	</ul>
-				  	</div>
-	            </nav>
-	        </div>
-			<%-- 왼쪽 사이드 메뉴 끝 --%>
-
-			<div class="col-xl-9 mt-4">
 				<div class="mb-3">
 	            	<span class="h4" style="font-weight: bold;">기본회원정보</span>&nbsp;&nbsp;<span class="h5" style="font-weight: bold; color: #69707a;">필수</span>
 	            </div>
@@ -121,37 +68,41 @@ $(document).ready(function() {
 					<input id="ctxPath" type="hidden" value="<%= ctxPath%>"/>
 					
 					<%-- 사진 파트--%>
-					<tr >
+					<tr id="profile_image_area">
 						<th scope="row">사진</th>
                         <td>  
-							<div>
-								이미지
+							<div class="mb-2">
+								<img class="userimg_size" src="<%= ctxPath%>/images/member/${sessionScope.loginuser.userimg}" />
 							</div>
                             
                             <p>회원님을 알릴 수 있는 사진을 등록해 주세요.</p>
                         </td>
                         <td>
-                            <button class="btn btn-sm btn-outline-dark change_btn" type="button" id="change_btn">사진 변경</button>
+                            <button class="btn btn-sm btn-outline-dark change_btn" type="button" id="change_img">사진 변경</button>
                         </td>
                     </tr>
                     <%--사진 수정 할 경우 기본 숨김--%>
                     <tr id="change_profile_image_area">
                         <th scope="row">사진2 변경 시 보여지게 함</th>
                         <td>
-                            <div>
-								이미지2
-							</div>
-                            
-                            <p class="mb-2">2회원님을 알릴 수 있는 사진을 등록해 주세요.</p>
-                            <div class="mb-3">
-                                <label class="btn btn-sm btn-outline-secondary selectPicture" for="profile-image" id="selectPicture">사진 선택</label>
-                                <input id="profile-image" type="file" style="display: none;">
-                                <button class="btn btn-sm btn-outline-secondary" type="button" >기본이미지로 변경</button>
-                            </div>
+                        	<form name="imgForm">
+	                            <div class="mb-2">
+									<img class="userimg_size previewImg" id="previewImg" />
+								</div>
+	                            
+	                            <p class="mb-2">회원님을 알릴 수 있는 사진을 등록해 주세요.</p>
+	                            <div class="mb-3">
+	                                <label class="btn btn-sm btn-outline-secondary selectPicture" for="profile_image" id="selectPicture">사진 선택</label>
+	                                <input class="previewImg" id="profile_image" name="userimg" type="file" accept='image/jpeg, image/png, .jpg, .png' style="display: none;">
+	                            </div>
+	                            <input name="infoUpdate" value="img" type="hidden"/>
+								<input name="userid" value="${sessionScope.loginuser.userid}" type="hidden" />
+                            </form>
                         </td>
                         <td>
-                            <button class="btn btn-sm btn-outline-secondary twobtn" type="button" >취소</button>
-							<button class="btn btn-sm btn-outline-dark twobtn" type="button" >완료</button>
+                            <button class="btn btn-sm btn-outline-secondary twobtn" id="imgcancle" type="reset" >취소</button>
+							<button class="btn btn-sm btn-outline-dark twobtn" type="button" id="imgUpdate" onclick="imgUP()" >완료</button>
+							
                         </td>
                     </tr>
 
@@ -260,7 +211,7 @@ $(document).ready(function() {
 							<span id="mobile"><input id="mobile" type="hidden" value="${sessionScope.loginuser.mobile}"/> </span>
                         </td>
                         <td>
-                            <button class="btn btn-sm btn-outline-dark change_btn" type="button" id="change_btn">휴대전화 변경</button>
+                            <button class="btn btn-sm btn-outline-dark change_btn" type="button" id="change_mobile">휴대전화 변경</button>
                         </td>
                     </tr>
                     <%-- 전화번호 변경 파트 --%>
@@ -349,11 +300,8 @@ $(document).ready(function() {
 
                     </tr>
 				</table>
-			</div>
-	    </div>
-	</div>
-
-<%-- 회원정보 내용 시작 --%>
+				
+<jsp:include page="../footer2_user.jsp"></jsp:include>
 
 
 <jsp:include page="../footer.jsp"></jsp:include>

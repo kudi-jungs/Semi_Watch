@@ -356,4 +356,111 @@ ON A.pdno = B.fk_pdno;
 select pd_detailno, fk_pdno, color
 from tbl_pd_detail 
 
-		        
+select *
+from tbl_review;
+
+select fk_pdno, fk_userid, review_content, starpoint, review_date		        
+from tbl_review 
+where fk_pdno = 112;
+
+select fk_pdno, fk_userid, review_content, starpoint		        
+from tbl_review 
+where fk_pdno = 112;
+
+SELECT fk_pdno, AVG(starpoint) 
+FROM tbl_review
+GROUP BY fk_pdno;
+
+----------------------
+      
+select fk_pdno, fk_userid, review_content, starpoint		        
+from tbl_review A
+where fk_pdno = 112;
+
+SELECT fk_pdno, AVG(starpoint) 
+FROM tbl_review B
+GROUP BY fk_pdno;      
+
+-------------------------------------------------
+
+select A.fk_pdno, A.fk_userid, A.review_content, A.starpoint, B.avg_starpoint, B.reviewcount, to_char(to_date(A.review_date, 'yyyy-mm-dd'),'yy-mm-dd')     
+from tbl_review A
+JOIN
+(SELECT fk_pdno, trunc(AVG(starpoint),1) as avg_starpoint, COUNT(review_content) as reviewcount
+FROM tbl_review 
+GROUP BY fk_pdno) B
+ON A.fk_pdno = B.fk_pdno
+where A.fk_pdno = 112;
+
+select * from tbl_product
+where pdno = 112;
+
+------- 리뷰 페이징 처리 ----- 3명씩 보이게 함
+select ceil(count(*)/3) 
+from tbl_review 
+where fk_pdno = 112;
+;
+ 
+
+
+select rno, userid, username, email, gender 
+from (
+    select rownum AS rno, userid, username, email, gender 
+    from (
+        select userid, username, email, gender 
+        from tbl_review 
+        where userid != 'admin' 
+        order by registerday desc
+    ) V
+) T
+where T.rno between 6 and 10;
+   
+
+SELECT rno, fk_pdno, fk_userid, review_content, starpoint, avg_starpoint, reviewcount, review_date
+FROM (
+    SELECT rownum AS rno, A.fk_pdno, A.fk_userid, A.review_content, A.starpoint, B.avg_starpoint, B.reviewcount, 
+           TO_CHAR(TO_DATE(A.review_date, 'yyyy-mm-dd'), 'yy-mm-dd') AS review_date
+    FROM tbl_review A
+    JOIN (
+        SELECT fk_pdno, TRUNC(AVG(starpoint), 1) AS avg_starpoint, COUNT(review_content) AS reviewcount
+        FROM tbl_review 
+        GROUP BY fk_pdno
+    ) B ON A.fk_pdno = B.fk_pdno
+    WHERE A.fk_pdno = 112
+) T
+WHERE T.rno BETWEEN 1 AND 3;
+
+select reviewno from tbl_review
+where fk_pdno = 132 and fk_userid = 'nime0110';
+
+delete from tbl_review where fk_userid = 'nime0110' and fk_pdno = 178;
+commit;
+
+select * from tbl_review;
+select review_content, starpoint from tbl_review
+WHERE fk_pdno = 178 and fk_userid = 'nime0110';
+
+--- 리뷰수정 쿼리 ---
+UPDATE tbl_review
+   SET review_content = '엥? 시계 별론데요',
+       starpoint = 1
+ WHERE fk_pdno = 178 and fk_userid = 'nime0110';
+ commit;
+ 
+ 
+ 
+SELECT userid, username, pwdchangegap, 
+NVL( lastlogingap, trunc(months_between(sysdate,registerday)) ) AS lastlogingap, 
+	                  idle, 
+	                      mobile, email, postcode, address, detail_address, extra_address,
+                          to_char(registerday, 'yyyy-mm-dd') AS registerday, userimg  
+                          FROM 
+ ( select userid, username,  
+            trunc( months_between(sysdate, lastpwdchangedate) ) AS pwdchangegap,
+            registerday, idle, 
+       mobile, email, postcode, address, detail_address, extra_address, userimg 
+ from tbl_member where status = 1 and userid = 'nime0110') M 
+CROSS JOIN 
+ ( select trunc( months_between(sysdate, max(logindate)) ) AS lastlogingap 
+ from tbl_loginhistory  where fk_userid = 'nime0110') H ;
+                

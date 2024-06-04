@@ -7,17 +7,24 @@
 %>
 
 <link rel="stylesheet" href="../font/css/all.css">
-<link rel="stylesheet" type="text/css" href="<%= ctx_Path%>/css/itemDetail/itemDetail.css" />
+
+<jsp:include page="../header1.jsp" />
+
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css">
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
 <%-- 허성심 제작 페이지 --%>
-<jsp:include page="../header1.jsp" />
+<link rel="stylesheet" type="text/css" href="<%= ctx_Path%>/css/itemDetail/itemDetail.css" />
+
+
 <script type="text/javascript" src="<%= ctx_Path%>/js/item/itemDetail.js"></script>
+<script type="text/javascript">
+	
 
+</script>
 
-  <main>
+  <main style="margin-top:10vh;">
     <article class="product">
   <!-- 라이트박스용, 아직 미작성 -->
       <section class="product__slider default-container" aria-label="Product preview">
@@ -56,8 +63,11 @@
           <!-- 라이트박스용 -->
       <section class="product__content default-container" aria-label="Product content">
         <header>
-          <input type="hidden" id="productno" name="pdno" value="${pvo.pdno}">
-          <h2 class="company-name" tabindex="0">${pvo.brand}</h2>
+    	  <input type="hidden" id="productno" name="pdno" value="${pvo.pdno}">
+          <input type="hidden" id="productpoint" name="point" value="${pvo.point}"> 
+          <h2 class="company-name" tabindex="0">
+          	<a href="<%= ctx_Path%>/item/itemList.flex?brand=${pvo.brand}">${pvo.brand}</a>
+          </h2>
           <p class="product__name" tabindex="0"></p>
           <h3 class="product__title" tabindex="0" id="productName">${pvo.pdname}</h3>
         </header>
@@ -102,6 +112,8 @@
 		</c:if>
 		<!-- 색상선택끝 -->
         <form action="#" class="cart-form" style="margin-top:30px;">
+         <input type="hidden" id="productno" name="pdno" value="${pvo.pdno}">
+          <input type="hidden" id="productpoint" name="point" value="${pvo.point}">
           <div class="cart-form__input-container" aria-label="Define the product quantity">
             <button type="button" class="btn-changeValue minus-item">
               <span class="sr-only">Minus one item</span>
@@ -126,7 +138,15 @@
         </form>
       </section>
     </article>
-
+    <!-------------------------- 구매하기 폼 보내기 ------------------------------->
+	<form name="buyFrm" >
+    	  <input type="hidden" id="productno" name="str_pdno" value="${pvo.pdno}">
+          <input type="hidden" id="str_cart_qty" name="str_cart_qty" value="">
+          <input type="hidden" id="productpoint" name="productpoint" value="">
+          <input type="hidden" id="str_pd_detailno" name="str_pd_detailno" value="">
+          <input type="hidden" id="str_pdPriceArr" name="str_pdPriceArr" value="">
+          <input type="hidden" id="str_pdPointArr" name="str_pdPointArr" value="">
+	</form>
   </main>
   
   <div class="lightbox" id="lightbox" role="dialog"></div>
@@ -141,7 +161,7 @@
      <ul>
        <li><a href="#iteminfo">상품상세정보</a></li>
        <li><a href="#finalbox">배송/교환/반품</a></li>
-       <li><a href="#bestReview">리뷰 &#40;20&#41;</a></li>
+       <li><a href="#bestReview">리뷰 &#40;<span class="reviewCountli"></span>&#41;</a></li>
      </ul>
    </div>
    
@@ -149,8 +169,7 @@
      <h2>${pvo.pdname}</h2>
 
      <div class="mainImg">
-       <img src="${pageContext.request.contextPath}/images/itemDetail/image-product-2.jpg" alt="상세이미지1" />
-       <img src="${pageContext.request.contextPath}/images/itemDetail/image-product-3.jpg" alt="상세이미지2" />
+       <img src="${pageContext.request.contextPath}/images/product/${pvo.pd_contentimg}" alt="상세이미지1" style="width:90em;" />
      </div>
    </div>
  </div>
@@ -159,7 +178,7 @@
       <ul>
         <li><a href="#iteminfo">상품상세정보</a></li>
         <li><a href="#finalbox">배송/교환/반품</a></li>
-        <li><a href="#normalReview">리뷰 &#40;20&#41;</a></li>
+        <li><a href="#normalReview">리뷰 &#40;<span class="reviewCountli"></span>&#41;</a></li>
       </ul>
     </div>
     <div id="infobox">
@@ -199,114 +218,37 @@
 	</div>
 </div>
   <div id="review" class="container">
-<!-- 리뷰란 -->
     <div id="reviewcate" class="categori">
       <ul>
         <li><a href="#iteminfo">상품상세정보</a></li>
         <li><a href="#finalbox">배송/교환/반품</a></li>
-        <li><a href="#bestReview">리뷰 &#40;20&#41;</a></li>
+        <li><a href="#bestReview">리뷰 &#40;<span class="reviewCountli"></span>&#41;</a></li>
       </ul>
     </div>
 
+<!-- 리뷰란 -->
     <div id="normalReview">
       <div id="reviews_">
+	      	<div id="rateAndCount">
+	      		<div id="rateView">
+	      			<span></span>
+					<div id="avgRateYo" data-rateyo-read-only="true"></div>
+					<h4>평균별점 <span></span></h4>
+	      		</div>
+				<h4>전체 리뷰수 <span></span></h4>
+			</div>
         <ul id="reviewsel">
-          <li><a href="#">베스트리뷰 |</a></li>
-          <li><a href="#">작성일자순 |</a></li>
-          <li><a href="#">최신순 </a></li>
+
         </ul>
         <div id="reviewBoard">
-          <table>
-            <tr>
-              <td>
-                <p>솔직 구매후기 남깁니다~ 처음 구매해봤어요</p>
-                <a href="#">
-                노래 한곡 한곡 따뜻한 주제가 돋보이는 아름다운 한글가사의 노래를 모아봤어요. 바삐 돌아가는 하루에 빠른비트의 음악들도 좋지만. 가끔은 그 옛날 연필로 가사 ...
-                더미데이터입니다. 더미데이터입니다.더미데이터입니다.더미데이터입니다.더미데이터입니다.더미데이터입니다.더미데이터입니다.더미데이터입니다.더미데이터입니다.더미데이터입니다.
-                
-                </a>
-              </td>
-              <td>
-                <p>
-                  <span>작성일자</span>
-                  2024.05.15
-                </p>
-                <p>
-                  <span>작성자</span>
-                  nva_1**
-                </p>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <p>솔직 구매후기 남깁니다~ 처음 구매해봤어요</p>
-                <a href="#">...더보기</a>
-              </td>
-              <td>
-                <p>
-                  <span>작성일자</span>
-                  2021.02.24
-                </p>
-                <p>
-                  <span>작성자</span>
-                  nva_1**
-                </p>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <p>솔직 구매후기 남깁니다~ 처음 구매해봤어요</p>
-                <a href="#">...더보기</a>
-              </td>
-              <td>
-                <p>
-                  <span>작성일자</span>
-                  2021.02.24
-                </p>
-                <p>
-                  <span>작성자</span>
-                  nva_1**
-                </p>
-              </td>
-            </tr>
+          <table style="width:100%;">
+	          <%-- js에서 생성 --%>
           </table>
         </div>
-        <div id="writeReview">
-          <a href="#">리뷰쓰기</a>
-        </div>
-        <!-- review popup start -->
-        <div id="reviewPopup" class="popup">
-	    <div class="popup-content">
-	        <span class="close">&times;</span>
-	        <h2>Write a Review</h2>
-	        <textarea id="reviewText" rows="4" cols="50" placeholder="Write your review here..."></textarea>
-	        <br>
-	        <button id="submitReviewBtn">Submit Review</button>
-	    </div>
-		</div>
         <!-- review popup end -->
-        <div id="rpageNumber">
-          <a href="#">
-            <img src="${pageContext.request.contextPath}/images/itemDetail/12345allowleft.png" 
-            alt="왼쪽 화살표">
-          </a>
-          <span>
-            <a href="#">1</a>
-            <a href="#">2</a>
-            <a href="#">3</a>
-            <a href="#">4</a>
-            <a href="#">5</a>
-            <a href="#">6</a>
-            <a href="#">7</a>
-            <a href="#">8</a>
-            <a href="#">9</a>
-            <a href="#">10</a>
-          </span>
-          <a href="#">
-            <img src="${pageContext.request.contextPath}/images/itemDetail/12345allowright.png" 
-            alt="오른쪽 화살표">
-          </a>
-        </div>
+        <ul id="rpageNumber" class="pagination">
+			 <%-- js에서 생성 --%>
+        </ul>
       </div>
     </div>
   </div>

@@ -31,17 +31,16 @@ $(document).ready(function() {
         // alert("확인용 제품갯수 : "+odrCount);
 		// 확인용 제품개수 : 2
 		
-		const firstpname = $(window.opener.document).find("span#pname1").text();
+		const firstpname = $(window.opener.document).find("span#pname0").text();
 		// alert("확인용 첫번째 제품명 : "+firstpname);
 		
 		let odrPname = firstpname;
-		//alert("확인용 첫번째 제품명 : "+odrPname);
+		// alert("확인용 첫번째 제품명 : "+odrPname);
 		
 		if(odrCount > 1){
 			odrPname = firstpname+" 외 "+Number(odrCount-1);
-			//alert("확인용 첫번째 제품명 : "+odrPname);
+			// alert("확인용 첫번째 제품명 : "+odrPname);
 		}
-		
 		
 	
 		//	여기 링크를 꼭 참고하세용 http://www.iamport.kr/getstarted
@@ -101,20 +100,25 @@ $(document).ready(function() {
 			    self.close();
 				
        		} else {
-	            	
 	            alert("결제에 실패하였습니다.");
 	            self.close();
 	       	}
 		
 	   	}); // end of IMP.request_pay()----------------------------
-	   
+	   	
+	   	<%--
+	 	// 사용자가 임의로 팝업창을 닫은경우
+		$(window).bind("beforeunload", function (e){
+			window.opener.checkOutUpdate('<%= ctxPath%>','${requestScope.userid}', isPaymentcheck);
+
+		});// end of $(window).bind("beforeunload", function (e)----------
+		--%>		
 	   
 	}// end of if (window.opener && !window.opener.closed)------------
 	else{ // 부모창이 꺼지던가, 로그인이 안된 경우
 		alert("비정상적인 이동경로 입니다.");
 		self.close();
 	}
-
 	
 }); // end of $(document).ready()-----------------------------
 

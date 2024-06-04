@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
  <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
-	String ctxPath = request.getContextPath();
+   String ctxPath = request.getContextPath();
 %>
 <!DOCTYPE html>
 <html>
@@ -73,15 +73,17 @@
             <c:if test="${not empty sessionScope.loginuser and sessionScope.loginuser.userid == 'admin'}"> 
               <li>
                 <a href="#" style="color:white !important; text-decoration: none !important; margin-top:3px;" class="nav-link dropdown-toggle menufont_size text-primary" id="navbarDropdown" data-toggle="dropdown">
-                	관리자전용
+                   관리자전용
                 </a>
                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-	                 <a class="dropdown-item text-primary" href="<%=ctxPath%>/member/memberList.flex">회원목록</a>
-	                 <a class="dropdown-item text-primary" href="<%=ctxPath%>/item/itemRegister.flex">제품등록</a>
-	                 <a class="dropdown-item text-primary" href="<%=ctxPath%>/member/reviewList.flex">리뷰관리</a>
-	                 <div class="dropdown-divider"></div>
-	                 <a class="dropdown-item text-primary" href="<%=ctxPath%>/item/orderList.flex">전체주문내역</a>
-              	 </div>
+                    <a class="dropdown-item text-primary" href="<%=ctxPath%>/member/memberList.flex">회원목록</a>
+                    <a class="dropdown-item text-primary" href="<%=ctxPath%>/member/reviewList.flex">리뷰관리</a>
+                    <a class="dropdown-item text-primary" href="<%=ctxPath%>/admin/itemRegister.flex">상품등록</a>
+                    <a class="dropdown-item text-primary" href="<%=ctxPath%>/admin/itemUpdateList.flex">상품수정</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item text-primary" href="<%=ctxPath%>/order/orderList.flex">전체주문내역</a>
+                    <a class="dropdown-item text-primary" href="<%=ctxPath%>/admin/chart.flex">통계내역</a>
+                  </div>
               </li>
              </c:if>
             <%-- admin end --%>  
@@ -89,31 +91,42 @@
           </div>
         </nav>
     </div>
+    <c:if test="${(not empty sessionScope.loginuser) and (sessionScope.loginuser.userid eq 'admin')}">
+       <p>관리자 로그인중</p>
+       <a href="<%= ctxPath%>/login/logout.flex" class="logoutIcon">
+         <img src="<%= ctxPath%>/images/header/logout.svg"  style="width:30px;" role="presentation">
+      </a>
+    </c:if>
+    <c:if test="${(empty sessionScope.loginuser) or (sessionScope.loginuser.userid ne 'admin')}">
     <%-- wishList start --%>
     <div class="top-header__right">
-      <button class="top-header__btn-cart" type="button" aria-controls="cart-section" aria-expanded="false">
+      <button class="top-header__btn-cart" id="wishIcon" type="button" aria-controls="cart-section" aria-expanded="false">
         <span class="sr-only">Button wishlist</span>
         <span class="icon icon-cart" aria-hidden="true"></span>
         <span class="items-quantity">
           <span class="value">0</span><span class="sr-only">items</span>
         </span>
       </button>
-      <a href="<%= ctxPath %>/item/itemCart.flex">
-        <img src="<%= ctxPath%>/images/header/icon-cart.svg" style="margin-right:30px;" role="presentation">
+      <a href="<%= ctxPath %>/item/itemCart.flex"  id="cartIcon">
+        <img src="<%= ctxPath%>/images/header/icon-cart.svg" role="presentation">
       </a>
     <%-- user start --%>
      <c:if test="${empty sessionScope.loginuser}"> 
-      <a href="<%= ctxPath %>/login/login.flex">
-        <img src="<%= ctxPath%>/images/header/user.svg" style="margin-right:30px;" role="presentation">
+      <a href="<%= ctxPath %>/login/login.flex"  id="LoginIcon" >
+        <img src="<%= ctxPath%>/images/header/user.svg"role="presentation">
       </a>
-      </c:if>
-      <c:if test="${not empty sessionScope.loginuser}"> 
-	      <a class="user-container" aria-label="User section" href="<%= ctxPath %>/member/memberInfoChange.flex">
-	        <img src="<%= ctxPath%>/images/member/usernormal.jpg" alt="" class="user-container__img" role="presentation">
-	      </a>
+     </c:if>
+      <c:if test="${not empty sessionScope.loginuser}">
+         <a href="<%= ctxPath%>/login/logout.flex"  class="logoutIcon" >
+           <img src="<%= ctxPath%>/images/header/logout.svg"style="width:30px;" role="presentation">
+          </a>
+         <a class="user-container" aria-label="User section" id="userIcon" href="<%= ctxPath %>/member/memberInfoChange.flex">
+           <img src="<%= ctxPath%>/images/member/${sessionScope.loginuser.userimg}" alt="" class="user-container__img" role="presentation">
+         </a>
       </c:if>
     <%-- user end --%>
     </div>
+    </c:if>
     <section class="cart-section" id="cart-section" aria-live="polite">
       <h3 class="cart-section__title">위시리스트</h3>
       <div class="cart-section__body">
@@ -123,7 +136,7 @@
         <button type="button" class="cart-section__btn-checkout">Checkout</button>
       </div>
       <div style="display:flex; flex-direction: column; border-radius:0px !important;">  
-	    <button class="btn btn-dark" onclick="addCart()">장바구니로 이동하기</button>
+       <button class="btn btn-dark" onclick="addCart()">장바구니로 이동하기</button>
       </div>
     </section>
     <%-- cart end  --%>

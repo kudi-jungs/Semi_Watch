@@ -69,6 +69,8 @@ UPDATE tbl_member
 SET lastpwdchangedate = ADD_MONTHS(SYSDATE, -4)
 WHERE userid = 'kimkh3';
 
+commit;
+
 update tbl_member
 set pw = '9695b88a59a1610320897fa84cb7e144cc51f2984520efb77111d94b402a8382'
 where userid = 'kimkh3';
@@ -364,6 +366,104 @@ where rno between 1 and 6;
 
 select *
 from tbl_map;
+
+-------- **** 매장찾기(카카오지도) 테이블 생성하기 **** ----------
+create table tbl_map 
+(storeID       varchar2(20) not null   --  매장id
+,storeName     varchar2(100) not null  --  매장명
+,storeUrl      varchar2(200)            -- 매장 홈페이지(URL)주소
+,storeImg      varchar2(200) not null   -- 매장소개 이미지파일명  
+,storeAddress  varchar2(200) not null   -- 매장주소 및 매장전화번호
+,lat           number not null          -- 위도
+,lng           number not null          -- 경도 
+,zindex        number not null          -- zindex 숫자가 클수록 앞에 나온다.
+,constraint PK_tbl_map primary key(storeID)
+,constraint UQ_tbl_map_zindex unique(zindex)
+);
+-- Table TBL_MAP이(가) 생성되었습니다.
+
+create sequence seq_tbl_map_zindex
+start with 1
+increment by 1
+nomaxvalue
+nominvalue
+nocycle
+nocache;
+-- Sequence SEQ_TBL_MAP_ZINDEX이(가) 생성되었습니다.
+
+insert into tbl_map(storeID, storeName, storeUrl, storeImg, storeAddress, lat, lng, zindex)
+values('store1','롤렉스1','https://place.map.kakao.com/m/12853381', 'place.png', '서울 강남구 테헤란로 152 (T)02-2112-1251', 37.5000242405515, 127.036508620542, 1);
+
+insert into tbl_map(storeID, storeName, storeUrl, storeImg, storeAddress, lat, lng, zindex)
+values('store2','지샥1','https://place.map.kakao.com/m/1973234825', 'place.png', '서울 용산구 한강대로23길 55 (T)02-2012-1288', 37.5297718014452, 126.964741503485, 2);
+
+insert into tbl_map(storeID, storeName, storeUrl, storeImg, storeAddress, lat, lng, zindex)
+values('store3','세이코1','https://place.map.kakao.com/m/27105799', 'place.png', '서울 중구 세종대로 64 (T)02-754-1068', 37.561973319432, 126.976696252264, 3);
+
+commit;
+
+
+ select * 
+from tbl_review R JOIN tbl_product P 
+on R.fk_pdno = P.pdno 
+where fk_userid != 'admin'
+ and fk_userid like '%' || 'ni' || '%' 
+
+select *
+from tbl_review
+
+select *
+from tbl_product
+
+
+ SELECT rno, reviewno, pdname, userid, username, brand, review_content, starpoint 
+					FROM 
+					( 
+					SELECT rownum AS rno, reviewno, pdname, userid, username, brand, review_content, starpoint 
+					FROM 
+					( 
+					SELECT TO_NUMBER(R.reviewno) AS reviewno, P.pdname AS pdname, M.userid AS userid, 
+					M.username AS username, P.brand AS brand, R.review_content AS review_content, 
+					R.starpoint AS starpoint 
+					FROM tbl_review R 
+					JOIN tbl_product P ON R.fk_pdno = P.pdno 
+					JOIN tbl_member M ON R.fk_userid = M.userid 
+					WHERE M.userid != 'admin' 
+					 ORDER BY reviewno DESC)
+                     )
+                    where UPPER(pdname) like '%' || UPPER('l') || '%'
+                    and rno between 1 and 10;
+
+
+SELECT rno, reviewno, pdname, userid, username, brand, review_content, starpoint 
+FROM 
+( 
+SELECT rownum AS rno, reviewno, pdname, userid, username, brand, review_content, starpoint 
+FROM 
+( 
+SELECT TO_NUMBER(R.reviewno) AS reviewno, P.pdname AS pdname, M.userid AS userid, 
+ M.username AS username, P.brand AS brand, R.review_content AS review_content, 
+R.starpoint AS starpoint 
+FROM tbl_review R 
+JOIN tbl_product P ON R.fk_pdno = P.pdno 
+JOIN tbl_member M ON R.fk_userid = M.userid 
+WHERE R.fk_userid != 'admin'
+and P.pdname LIKE '%' || 'L' || '%'
+ORDER BY reviewno DESC 
+)
+)
++ "WHERE rno BETWEEN ? AND ? 
+
+
+
+
+ SELECT R.reviewno AS reviewno, P.brand AS brand, P.pdno AS pdno, P.pdname AS pdname, P.pdimg1 AS pdimg1, M.userid AS userid, M.username AS username, R.review_content AS review_content, R.starpoint AS starpoint, R.review_date AS review_date 
+FROM tbl_review R JOIN tbl_product P 
+ON R.fk_pdno = P.pdno JOIN tbl_member M 
+on R.fk_userid = M.userid 
+where reviewno = 60
+
+
 
 -- pdstatus
 -- pdinputdate
