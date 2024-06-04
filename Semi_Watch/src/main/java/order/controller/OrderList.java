@@ -54,13 +54,17 @@ public class OrderList extends AbstractController {
 			// *** 관리자가 아닌 일반사용자로 로그인 했을 경우에는 자신이 주문한 내역만 페이징 처리하여 조회를 해오고, 
 	        //     관리자로 로그인을 했을 경우에는 모든 사용자들의 주문내역을 페이징 처리하여 조회해온다.
 			
-			// 여러 테이블을 조인해야 할때는 Map으로 하는게 가장 편함
+		 // 여러 테이블을 조인해야 할때는 Map으로 하는게 가장 편함
 			String userid = loginuser.getUserid();
 		 // System.out.println("loginuserid : " + userid);
 			List<Map<String, String>> order_map_List = odao.getOrderList(userid);
+		
+		 // 주문한 유저 이름 가져오기	
 			String orderName = odao.getorderName(userid);
-		
-		
+			
+		 // 관리자가 전회원 주문내역 들어와서 볼 수 있는 정보 (== 관리자 로그인)
+			List<Map<String, String>> order_list_admin = odao.getOdrListAdmin(userid);
+			System.out.println("확인용 order_list_admin: " + order_list_admin.size());
 			// 메소드에 넣기
 			// List<OrderVO> orderList = odao.orderUserId(userid); // 로그인된 사람의 아이디가 들어옴.
 		    // List<Map<String,String>> order_map_List = odao.getOrderList("paraMap");
@@ -76,7 +80,8 @@ public class OrderList extends AbstractController {
 		   System.out.println("사이즈"+order_map_List.size());
 		   request.setAttribute("order_map_List", order_map_List);
 		   request.setAttribute("userid", userid);
-		    
+		   request.setAttribute("orderName", orderName);
+		   request.setAttribute("order_list_admin", order_list_admin);
 		}
 		   super.setRedirect(false);
 		   super.setViewPage("/WEB-INF/order/orderList.jsp");

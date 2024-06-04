@@ -345,10 +345,10 @@ from user_sequences;
  
 
 
-select*
+select *
 from tbl_orderdetail;
 
-select*
+select *
 from tbl_pd_detail;
 
 select *
@@ -461,8 +461,75 @@ select ordercode, E.fk_userid as fk_userid , total_price, total_orderdate, fk_pd
                         
 select username
 from tbl_member
-where userid = ?;
+where userid = 'yuseonwoo';
 
+select A.ordercode, A.fk_userid, total_price, total_orderdate, delivery_status, pdname
+from 
+(
+select *
+from tbl_order
+)A
+join tbl_orderdetail B
+on A.ordercode = B.fk_ordercode
+join tbl_pd_detail C
+on B.fk_pd_detailno = C.pd_detailno
+join tbl_product D
+on C.fk_pdno = D.pdno
+where A.fk_userid != 'admin';
+
+
+select *
+from tbl_orderdetail
+
+
+select *
+from tbl_order;
+
+--------------------------------------------------------------------------------------------------------선생님 예시임---------------------
+select A.odrcode, A.fk_userid, to_char(A.odrdate, 'yyyy-mm-dd hh24:mi:ss') AS odrdate
+     , B.odrseqnum, B.fk_pnum, B.oqty, B.odrprice 
+, case B.deliverstatus 
+when 1 then '주문완료' 
+when 2 then '배송중' 
+when 3 then '배송완료' 
+END AS deliverstatus 
+, C.pname, C.pimage1, C.price, C.saleprice, C.point 
+from tbl_order A JOIN tbl_orderdetail B 
+ON A.odrcode = B.fk_odrcode 
+join TBL_PRODUCT C 
+on B.fk_pnum = C.pnum ;
+---------------------------------------------------------------------------------------------------------------                       
+
+select *
+from tbl_orderdetail;
+
+
+desc tbl_order;
+desc tbl_orderdetail;
+
+alter table tbl_orderdetail modify DELIVERY_STATUS number(1);
+
+select A.ordercode, A.fk_userid, total_price, total_orderdate,
+pdname,
+decode(delivery_status , '1' ,'주문완료' ,'2' ,'배송중' , '3' , '배송완료') as delivery_status
+from 
+( 
+select *
+from tbl_order 
+)A 
+join tbl_orderdetail B 
+on A.ordercode = B.fk_ordercode
+join tbl_pd_detail C
+on B.fk_pd_detailno = C.pd_detailno
+join tbl_product D 
+on C.fk_pdno = D.pdno 
+where A.fk_userid != 'admin';
+
+
+when 1 then '주문완료' 
+when 2 then '배송중' 
+when 3 then '배송완료' 
+END AS delivery_status
 
 
                         

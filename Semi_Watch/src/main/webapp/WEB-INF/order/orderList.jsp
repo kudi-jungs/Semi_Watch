@@ -42,6 +42,7 @@ $(document).ready(function() {
 <%-- 회원정보 내용 시작 --%>
 
    <%-- 상단 바 시작 --%>
+   <c:if test='${userid ne "admin"}'> 
    <div class="pt-3" id="topBar">
       <div>
          <h2 id="myPage">My Page</h2> 
@@ -77,6 +78,7 @@ $(document).ready(function() {
          
       </div>
    </div>
+   </c:if>
    <%-- 상단 바 끝 --%>
 
   <c:if test='${userid ne "admin"}'> 
@@ -128,14 +130,21 @@ $(document).ready(function() {
           	<table class="table table-bordered" id="OrderTable">
 				<div class="my-3">
 				    <c:set var="userid" value="${requestScope.userid}" />
+					<thead>	
 				       	<c:if test='${userid eq "admin"}'>
-					       		<p class="h4 text-center">&raquo;&nbsp;&nbsp;전 회원 주문내역보기&nbsp;&nbsp;&laquo;</p>
+					       	<p class="h4 text-center">&raquo;&nbsp;&nbsp;전 회원 주문내역보기&nbsp;&nbsp;&laquo;</p>
+				       		<tr>
+					          <td align="center">주문코드</td>
+					          <td align="center">아이디</td>
+					          <td align="center">상품이름</td>
+					          <td align="center">구매금액</td>
+					          <td align="center">주문일자</td>
+					          <td align="center">주문상태</td>
+				       		</tr>
 				       	</c:if>  	
-				       	
+											       	
 				       	<c:if test='${userid ne "admin"}'>
-				       		<p class="h4 text-center">&raquo;&nbsp;&nbsp;${userid} 님[ ${userid} ] 주문내역 목록&nbsp;&nbsp;&laquo;</p> 
-				       	</c:if>
-				  </div>
+				       		<p class="h4 text-center">&raquo;&nbsp;&nbsp;${loginuser.username} 님[ ${userid} ] 주문내역 목록&nbsp;&nbsp;&laquo;</p> 
 				       	<tr>
 				          <td align="center">주문코드</td>
 				          <td align="center">상품번호</td>
@@ -144,9 +153,11 @@ $(document).ready(function() {
 				          <td align="center">총 결제금액</td>
 				          <td align="center">주문일자</td>
 				       </tr>
+				       </c:if>
 		   			</thead>
-		   		
+		   			
 	   			<tbody>
+	   				<c:if test='${userid ne "admin"}'> 
 	   				<c:forEach var="odrMapList" items="${requestScope.order_map_List}">
 		   				<tr>
 		   					<td align="center">${odrMapList.ordercode}</td>
@@ -157,6 +168,16 @@ $(document).ready(function() {
 		   					<td align="center">${odrMapList.total_orderdate}</td>
 		   				</tr>
 					</c:forEach>
+					</c:if>
+					
+					<c:if test='${userid eq "admin"}'>
+						<td align="center"></td>
+						<td align="center"></td>
+						<td align="center"></td>
+						<td align="center"></td>
+						<td align="center"></td>
+						<td align="center"></td>
+					</c:if>
 	   			</tbody>
             </table>
          </div>

@@ -15,6 +15,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import member.domain.MemberVO;
 import order.domain.OrderVO;
 import shop.domain.ImageVO;
 
@@ -127,28 +128,107 @@ public class sw_4_OrderDAO_imple implements sw_4_OrderDAO {
 		}finally {
 			close();
 		}	
-	
 		return order_map_List;
-		
 	}
-
-
+	
+	
+	// 로그인한 유저 아이디 가져오기(주문현황 시작 파트에서 들어가야함. 관리자 제외)
 	@Override
 	public String getorderName(String userid) throws SQLException {
 		
-		String getorderName = new String();
+		String getorderName = "";
 		
 		try {
     		conn = ds.getConnection();
     		
-    		String sql = ""; 
+    	    String sql = " select username "
+    				   + " from tbl_member "
+    				   + " where userid = ? "; 
 		
+    	    pstmt = conn.prepareStatement(sql);
+    	    pstmt.setString(1, userid);
+    	    
+    	    rs = pstmt.executeQuery();
+    	    
+    	    if(rs.next()) {
+    	    	getorderName = new String();
+    	    }
+    	    String username = rs.getString("username");
+    	    
+    	    getorderName = username;
+    	 // System.out.println("확인용 : " + getorderName);
 		}finally {
-			
-			
+			close();
 		}
-		return null;
-		
+		return getorderName;
 	}
+
+	// 관리자가 전 회원 주문내역 보기 
+	@Override
+	public List<Map<String, String>> getOdrListAdmin(String userid) throws SQLException {
+		
+		List<Map<String,String>> order_list_admin = new ArrayList<>();
+		
+		try {
+    		conn = ds.getConnection();
+    		
+    		String sql = " select A.ordercode, A.fk_userid, total_price, to_char(total_orderdate,'yyyy-mm-dd') as total_orderdate "
+	 				   + "		, pdname"
+	 				   + "		, case delivery_status "
+	 				   + "			when 1 then '주문완료' "
+	 				   + "			when 2 then '배송중' "
+	 				   + "			when 3 then '배송완료' "
+	 				   + "			end as delivery_status "
+	    			   + " from "
+	    			   + " ( "
+	    			   + " select * "
+	    			   + " from tbl_order "
+	    			   + " )A "
+	    			   + " join tbl_orderdetail B "
+	    			   + " on A.ordercode = B.fk_ordercode "
+	    			   + " join tbl_pd_detail C "
+	    			   + " on B.fk_pd_detailno = C.pd_detailno "
+	    		       + " join tbl_product D "
+	    			   + " on C.fk_pdno = D.pdno ";
+ 			
+ 			if("admin".equals(userid)) {
+ 				// 관리자가 전 회원의 주문내역을 볼 때
+ 				sql += " where A.fk_userid != 'admin' ";
+ 				
+ 			}
+ 			
+ 			pstmt = conn.prepareStatement(sql);
+		
+ 			rs = pstmt.executeQuery();
+ 			
+ 				while(rs.next()) {
+ 					
+ 					String ordercode = rs.getString("ordercode");
+ 					String fk_userid = rs.getString("fk_userid");
+ 					String total_price = rs.getString("total_price");
+ 					String total_odrdate = rs.getString("total_orderdate");
+ 					String pdname = rs.getString("pdname");
+ 					String delivery_status = rs.getString("delivery_status");
+ 					
+ 					
+ 					Map<String, String> odradminList = new HashMap<>();
+ 					
+ 					odradminList.put("ordercode", ordercode);
+ 					odradminList.put("fk_userid",fk_userid);
+ 					odradminList.put("total_price", total_price);
+ 					odradminList.put("total_orderdate", total_odrdate);
+ 					odradminList.put("pdname", pdname);
+ 					odradminList.put("delivery_status", delivery_status);
+ 					
+ 					order_list_admin.add(odradminList);
+ 					
+ 				} // end of while()--------------------------------------------------
+ 				
+			}finally {
+				close();
+			}
+		
+		return order_list_admin;
+	} // end of public List<Map<String, String>> getOdrListAdmin(String userid) {----------------------------
 
 }
